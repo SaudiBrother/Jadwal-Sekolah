@@ -2859,4 +2859,31 @@ function setupEventListeners() {
 }
 
 // PERBAIKAN: Hapus kurung kurawal tambahan di akhir
+
+// Tambahkan di bagian paling akhir file script.js
+
+function init() {
+    console.log('Initializing app...');
+    updateCurrentDate();
+    setInitialTheme();
+    setupEventListeners();
+    debugButtons(); // Untuk debugging
+}
+
+// Panggil init saat halaman siap
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+// Fungsi debug
+function debugButtons() {
+    console.log('=== DEBUG INFO ===');
+    console.log('Theme toggle:', elements.themeToggle);
+    console.log('Class buttons:', elements.classButtons.length);
+    console.log('Fun facts button:', elements.funFactsBtn);
+    console.log('Fixed back button:', elements.fixedBackButton);
+    }
+
 document.addEventListener('DOMContentLoaded', init);
