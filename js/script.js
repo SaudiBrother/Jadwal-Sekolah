@@ -2563,7 +2563,7 @@ const funFactsData = [
         ]
     },
     {
-        title: "🎓 Guru dengan Gelar Akademik Tertinggi",
+        title: "🎓 Beberapa Guru dengan Gelar Akademik Tinggi",
         items: [
             "John Wuisan, M. Th (Magister Teologi)",
             "Sicilia Ledy S Sambur, M. Pd (Magister Pendidikan)",
@@ -2572,7 +2572,7 @@ const funFactsData = [
         ]
     },
     {
-        title: "⏰ Jam Mengajar Terbanyak",
+        title: "⏰ Guru Dengan Jam Mengajar Terbanyak",
         items: [
             "Nita A. Modali, S.Kom (TIK): 42 JP",
             "Christi Tumangkeng, S.Pd (TIK): 42 JP",
@@ -2581,6 +2581,7 @@ const funFactsData = [
             "Venly Pande, S.Pd (PJOK & TIK): 36 JP",
             "Sartika Ambat, S.Pd (gama Kristen & PKn): 36 JP",
             "Debi Bawiling, S.Pd (B. Indonesia & B. Inggris): 36 JP",
+            "JP = Jam Pelajaran"
             "Guru TIK memiliki beban jam tertinggi"
         ]
     }
@@ -3051,4 +3052,5 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
     init();
+
 }
