@@ -1,153 +1,54 @@
-/* ==============================
-   ANIMASI TAMBAHAN - REVISI
-   ============================== */
+/* ===================================================================
+   ANIMASI — disengaja dan secukupnya.
+   Tidak ada lagi animasi "mengapung" idle yang terus-menerus berjalan;
+   gerak hanya dipakai saat ada perubahan state yang perlu ditegaskan.
+   =================================================================== */
 
-/* Animasi untuk staggered list items */
-@keyframes staggeredFadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Animasi idle mengapung */
-@keyframes floatingIdle {
-    0%, 100% { 
-        transform: translateY(0) rotate(0deg); 
-    }
-    33% { 
-        transform: translateY(-5px) rotate(0.5deg); 
-    }
-    66% { 
-        transform: translateY(3px) rotate(-0.5deg); 
-    }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-/* Animasi glow teks */
-@keyframes textGlow {
-    0%, 100% { 
-        text-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
-    }
-    50% { 
-        text-shadow: 0 0 20px rgba(102, 126, 234, 0.6), 0 0 30px rgba(102, 126, 234, 0.4);
-    }
+@keyframes screenEnterRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
-/* Animasi mengapung lebih lambat */
-@keyframes slowFloat {
-    0%, 100% { 
-        transform: translateY(0); 
-    }
-    50% { 
-        transform: translateY(-15px); 
-    }
+@keyframes screenEnterLeft {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
-/* Animasi slide untuk transisi layar */
-@keyframes slideInRight {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+.screen.active {
+  animation: fadeIn var(--dur-normal) var(--ease);
 }
 
-@keyframes slideOutLeft {
-    from {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateX(-30px);
-    }
+.screen.enter-right { animation: screenEnterRight var(--dur-normal) var(--ease); }
+.screen.enter-left { animation: screenEnterLeft var(--dur-normal) var(--ease); }
+
+/* Daftar yang muncul bertahap (kartu rombel, baris jadwal, kartu fakta) */
+.stagger-item {
+  opacity: 0;
+  animation: fadeSlideUp var(--dur-normal) var(--ease) forwards;
 }
 
-@keyframes slideInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+/* Modal */
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
-@keyframes slideOutRight {
-    from {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateX(30px);
-    }
+.modal-overlay:not([hidden]) .modal {
+  animation: modalIn var(--dur-normal) var(--ease);
 }
-
-/* Kelas animasi */
-.floating-idle {
-    animation: floatingIdle 6s ease-in-out infinite;
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-
-.slow-float {
-    animation: slowFloat 5s ease-in-out infinite;
-}
-
-.glow-text {
-    animation: textGlow 4s ease-in-out infinite;
-}
-
-.staggered-item {
-    animation: staggeredFadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    opacity: 0;
-}
-
-.slide-in-right {
-    animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.slide-out-left {
-    animation: slideOutLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.slide-in-left {
-    animation: slideInLeft 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.slide-out-right {
-    animation: slideOutRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* Transisi default untuk screen */
-.screen {
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-/* Animasi untuk tombol */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-/* Hover effects */
-.hover-lift {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.hover-lift:hover {
-    transform: translateY(-5px);
+.modal-overlay:not([hidden]) {
+  animation: overlayIn var(--dur-fast) var(--ease);
 }
