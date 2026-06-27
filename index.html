@@ -1,134 +1,209 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Pelajaran SMP Negeri 2 Bitung</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/animations.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jadwal Pelajaran — SMP Negeri 2 Bitung</title>
+<meta name="description" content="Jadwal pelajaran SMP Negeri 2 Bitung untuk kelas VII, VIII, dan IX — lihat jadwal harian dengan cepat dan mudah.">
+
+<!-- ===== Tema warna browser (disinkronkan oleh app.js saat tema berubah) ===== -->
+<meta name="theme-color" id="themeColorMeta" content="#ffffff">
+
+<!-- ===== PWA: Manifest & ikon ===== -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+
+<!-- ===== Sentuhan khusus iOS / Safari (lihat catatan PDF poin 1) ===== -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Jadwal SMPN2">
+
+<!-- ===== Set atribut tema SEBELUM render pertama, agar tidak ada "kedipan" tema ===== -->
+<script>
+(function () {
+  try {
+    var saved = localStorage.getItem('jp-theme');
+    var theme;
+    if (saved === 'light' || saved === 'dark') {
+      theme = saved;
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      theme = 'dark';
+    } else {
+      theme = 'light'; // default putih bila preferensi sistem tak terdeteksi
+    }
+    document.documentElement.setAttribute('data-theme', theme);
+  } catch (e) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+})();
+</script>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/animations.css">
 </head>
-<body class="light-mode">
-    <!-- Container untuk tombol kembali (hanya satu tombol) -->
-    <div class="back-container" id="backContainer">
-        <button class="back-btn" id="backButton" aria-label="Kembali">
-            <i class="fas fa-arrow-left"></i>
-            <span class="back-text">Kembali</span>
+<body>
+
+<!-- ===== App bar: tombol kembali (kontekstual) + tombol tema ===== -->
+<header class="appbar">
+  <button class="appbar-btn" id="backButton" aria-label="Kembali" hidden>
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    <span>Kembali</span>
+  </button>
+  <div class="appbar-spacer"></div>
+  <button class="appbar-btn appbar-btn--icon" id="themeToggle" aria-label="Ganti tema terang/gelap">
+    <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+    <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</header>
+
+<main class="container" id="mainContainer">
+
+  <!-- Jejak navigasi (breadcrumb), diisi oleh app.js, tersembunyi di Beranda -->
+  <nav class="breadcrumb" id="breadcrumb" aria-label="Jejak navigasi" hidden></nav>
+
+  <!-- ============== BERANDA ============== -->
+  <section class="screen active" id="mainMenu" data-screen="mainMenu">
+
+    <div class="card hero">
+      <img src="assets/logo.svg" alt="Logo SMP Negeri 2 Bitung" class="school-logo" width="92" height="92">
+      <p class="eyebrow">Jadwal Pelajaran</p>
+      <h1 class="school-name">SMP Negeri 2 Bitung</h1>
+      <div class="hero-rule" aria-hidden="true"></div>
+      <p class="today-date" id="currentDate"></p>
+    </div>
+
+    <button class="card continue-card" id="continueCard" hidden>
+      <svg class="icon continue-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      <span class="continue-text">
+        <span class="continue-label" id="continueLabel">Lanjutkan</span>
+        <span class="continue-target" id="continueTarget">Kelas 7-1</span>
+      </span>
+      <svg class="icon chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+    <div class="card selector-card">
+      <h2 class="card-title">Pilih Tingkatan Kelas</h2>
+      <div class="grade-grid" id="gradeGrid">
+        <button class="grade-btn" data-class="7">
+          <span class="grade-roman">VII</span>
+          <span class="grade-label">Kelas 7</span>
         </button>
+        <button class="grade-btn" data-class="8">
+          <span class="grade-roman">VIII</span>
+          <span class="grade-label">Kelas 8</span>
+        </button>
+        <button class="grade-btn" data-class="9">
+          <span class="grade-roman">IX</span>
+          <span class="grade-label">Kelas 9</span>
+        </button>
+      </div>
     </div>
 
-    <!-- Kontainer Utama untuk semua tampilan -->
-    <div class="container" id="mainContainer">
-        <!-- Tampilan Menu Utama -->
-        <div class="screen active" id="mainMenu">
-            <!-- Tombol Toggle Tema hanya di menu utama -->
-            <button class="theme-toggle floating-idle" id="themeToggle" aria-label="Ganti tema">
-                <div class="sun-moon">
-                    <div class="sun"></div>
-                    <div class="moon"></div>
-                </div>
-            </button>
+    <button class="card link-card" id="funFactsBtn">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a6 6 0 0 0-4 10.5c.5.5.5 1 .5 1.5h7c0-.5 0-1 .5-1.5A6 6 0 0 0 12 2z"/></svg>
+      <span class="link-card-text">
+        <span class="link-card-title">Fun Facts Sekolah</span>
+        <span class="link-card-sub">Statistik &amp; data menarik guru SMP Negeri 2 Bitung</span>
+      </span>
+      <svg class="icon chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
 
-            <div class="title-container">
-                <h1 class="main-title floating-idle slow-float">
-                    <i class="fas fa-calendar-alt"></i> Jadwal Pelajaran
-                </h1>
-                <h2 class="subtitle-main glow-text">SMP Negeri 2 Bitung</h2>
-                <h3 class="current-date" id="currentDate">Dibuat : 2026, Rabu 21 Januari</h3>
-            </div>
-            
-            <div class="main-content-compact">
-                <div class="class-selection">
-                    <h3 class="selection-title">Pilih Tingkatan Kelas</h3>
-                    <div class="class-buttons">
-                        <button class="class-btn floating-idle" data-class="7" style="--color: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">
-                            <span class="class-number">VII</span>
-                            <span class="class-label">Kelas 7</span>
-                        </button>
-                        <button class="class-btn floating-idle" data-class="8" style="--color:  linear-gradient(135deg, #f093fb 0%, #f5576c 100%)">
-                            <span class="class-number">VIII</span>
-                            <span class="class-label">Kelas 8</span>
-                        </button>
-                        <button class="class-btn floating-idle" data-class="9" style="--color: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">
-                            <span class="class-number">IX</span>
-                            <span class="class-label">Kelas 9</span>
-                        </button>
-                    </div>
-                </div>
-                
-                <button class="fun-facts-btn floating-idle" id="funFactsBtn">
-                    <i class="fas fa-lightbulb"></i> Fun Facts Sekolah
-                </button>
-            </div>
-        </div>
-        
-        <!-- Tampilan Pemilihan Rombel -->
-        <div class="screen" id="rombelSelection">
-            <h1 class="section-title">Pilih Kelas</h1>
-            <div class="rombel-grid" id="rombelGrid">
-                <!-- Rombel akan dimasukkan melalui JavaScript -->
-            </div>
-        </div>
-        
-        <!-- Tampilan Pemilihan Hari -->
-        <div class="screen" id="daySelection">
-            <h1 class="section-title" id="dayTitle"></h1>
-            <div class="day-grid-compact">
-                <button class="day-btn-compact floating-idle" data-day="SENIN">
-                    <i class="fas fa-sun"></i> 
-                    <span>Senin</span>
-                </button>
-                <button class="day-btn-compact floating-idle" data-day="SELASA">
-                    <i class="fas fa-cloud"></i> 
-                    <span>Selasa</span>
-                </button>
-                <button class="day-btn-compact floating-idle" data-day="RABU">
-                    <i class="fas fa-cloud-sun"></i> 
-                    <span>Rabu</span>
-                </button>
-                <button class="day-btn-compact floating-idle" data-day="KAMIS">
-                    <i class="fas fa-cloud-rain"></i> 
-                    <span>Kamis</span>
-                </button>
-                <button class="day-btn-compact floating-idle" data-day="JUMAT">
-                    <i class="fas fa-star"></i> 
-                    <span>Jumat</span>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Tampilan Jadwal -->
-        <div class="screen" id="scheduleDisplay">
-            <h1 class="section-title" id="scheduleTitle"></h1>
-            <div class="schedule-container-auto">
-                <div class="schedule-header">
-                    <div class="header-time"><i class="fas fa-clock"></i> Waktu</div>
-                    <div class="header-subject"><i class="fas fa-book"></i> Mata Pelajaran</div>
-                </div>
-                <div class="schedule-list-auto" id="scheduleList">
-                    <!-- Jadwal akan dimasukkan melalui JavaScript -->
-                </div>
-            </div>
-        </div>
-        
-        <!-- Tampilan Fun Facts -->
-        <div class="screen" id="funFactsDisplay">
-            <!-- TIDAK ADA TOMBOL TEMA DI SINI (hanya di menu utama) -->
-            <h1 class="section-title">
-                <i class="fas fa-lightbulb"></i> Fun Facts Sekolah
-            </h1>
-            <div class="facts-container" id="factsContainer">
-                <!-- Fakta akan dimasukkan melalui JavaScript -->
-            </div>
-        </div>
+    <div class="card install-card" id="installCard" hidden>
+      <button class="install-dismiss" id="installDismiss" aria-label="Tutup">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <button class="install-action" id="installAction">
+        <svg class="icon install-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 19h14"/></svg>
+        <span class="install-text">
+          <span class="install-title">Install Aplikasi</span>
+          <span class="install-sub">Akses lebih cepat langsung dari layar utama</span>
+        </span>
+      </button>
     </div>
 
-    <script src="js/script.js"></script>
+  </section>
+
+  <!-- ============== PILIH ROMBEL ============== -->
+  <section class="screen" id="rombelSelection" data-screen="rombelSelection">
+    <h1 class="section-title" id="rombelTitle">Pilih Kelas</h1>
+    <div class="card">
+      <div class="rombel-grid" id="rombelGrid"></div>
+    </div>
+  </section>
+
+  <!-- ============== PILIH HARI ============== -->
+  <section class="screen" id="daySelection" data-screen="daySelection">
+    <h1 class="section-title" id="dayTitle">Pilih Hari</h1>
+    <div class="day-grid" id="dayGrid"></div>
+  </section>
+
+  <!-- ============== JADWAL ============== -->
+  <section class="screen" id="scheduleDisplay" data-screen="scheduleDisplay">
+    <h1 class="section-title" id="scheduleTitle">Jadwal</h1>
+    <div class="card schedule-card">
+      <div class="schedule-header">
+        <span>Waktu</span>
+        <span>Mata Pelajaran</span>
+      </div>
+      <div class="schedule-list" id="scheduleList"></div>
+    </div>
+  </section>
+
+  <!-- ============== FUN FACTS ============== -->
+  <section class="screen" id="funFactsDisplay" data-screen="funFactsDisplay">
+    <h1 class="section-title">Fun Facts Sekolah</h1>
+    <div class="facts-grid" id="factsContainer"></div>
+  </section>
+
+</main>
+
+<!-- ============== MODAL: Tutorial install iOS ============== -->
+<div class="modal-overlay" id="iosModalOverlay" hidden>
+  <div class="modal card" role="dialog" aria-modal="true" aria-labelledby="iosModalTitle">
+    <button class="modal-close" id="iosModalClose" aria-label="Tutup">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <p class="eyebrow">iPhone? Klik ini!</p>
+    <h2 id="iosModalTitle">Cara Install di iPhone</h2>
+    <ol class="ios-steps">
+      <li>
+        <span class="step-icon">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0-12l-4 4m4-4l4 4M5 13v6a2 2 0 002 2h10a2 2 0 002-2v-6"/></svg>
+        </span>
+        <span>Tap ikon <strong>Share</strong> di bar bawah Safari</span>
+      </li>
+      <li>
+        <span class="step-icon">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/></svg>
+        </span>
+        <span>Gulir lalu pilih <strong>Add to Home Screen</strong></span>
+      </li>
+      <li>
+        <span class="step-icon">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </span>
+        <span>Tap <strong>Add</strong> di pojok kanan atas</span>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<!-- ============== MODAL: Fallback umum (browser lain) ============== -->
+<div class="modal-overlay" id="genericModalOverlay" hidden>
+  <div class="modal card" role="dialog" aria-modal="true" aria-labelledby="genericModalTitle">
+    <button class="modal-close" id="genericModalClose" aria-label="Tutup">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <p class="eyebrow">Install Aplikasi</p>
+    <h2 id="genericModalTitle">Tambahkan ke Layar Utama</h2>
+    <p class="modal-body-text">Buka menu pada browser Anda, lalu cari opsi <strong>"Tambahkan ke Layar Utama"</strong> atau <strong>"Install App"</strong> untuk memasang aplikasi ini di perangkat Anda.</p>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
 </body>
-
 </html>
-
-
