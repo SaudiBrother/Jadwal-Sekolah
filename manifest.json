@@ -35,5 +35,21 @@
       "type": "image/png",
       "purpose": "maskable"
     }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/screenshot-narrow.png",
+      "sizes": "824x1830",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Jadwal pelajaran harian yang rapi dan mudah dibaca"
+    },
+    {
+      "src": "screenshots/screenshot-wide.png",
+      "sizes": "1920x1200",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Tampilan jadwal pelajaran di layar lebar"
+    }
   ]
 }

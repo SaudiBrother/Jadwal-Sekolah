@@ -5,7 +5,7 @@
  * isi file di bawah ini berubah agar pengguna menerima versi baru.
  */
 
-const CACHE_VERSION = 'jadwal-smpn2-v1';
+const CACHE_VERSION = 'jadwal-smpn2-v2';
 
 const APP_SHELL = [
   './',
